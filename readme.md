@@ -178,12 +178,12 @@ result = pipeline.query(
 
 | Feature | Status |
 |---------|--------|
-| Document ingestion | ✅ Complete |
-| Text chunking | ✅ Complete |
-| Embedding generation | ✅ Complete |
-| Vector storage (ChromaDB) | ✅ Complete |
-| Similarity search | ✅ Complete |
-| LLM integration | 🚧 In Progress |
+| Document ingestion | 🚧 In Progress |
+| Text chunking | 📋 Planned |
+| Embedding generation | 📋 Planned |
+| Vector storage (ChromaDB) | 📋 Planned |
+| Similarity search | 📋 Planned |
+| LLM integration | 📋 Planned |
 | Reranking | 📋 Planned |
 | Evaluation framework | 📋 Planned |
 | Query optimization | 📋 Planned |
@@ -191,9 +191,9 @@ result = pipeline.query(
 ## Roadmap
 
 ### Phase 1: Core Pipeline ✅
-- [x] Document ingestion
-- [x] Vector embeddings
-- [x] Similarity search
+- [ ] Document ingestion
+- [ ] Vector embeddings
+- [ ] Similarity search
 
 ### Phase 2: LLM Integration 🚧
 - [ ] Ollama integration
