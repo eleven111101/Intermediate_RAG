@@ -1,0 +1,40 @@
+[project]
+name = "rag-intermediate"
+version = "0.1.0"
+description = "Intermediate RAG system with ChromaDB, local LLM, and metadata database"
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    # LangChain
+    "langchain>=0.2.10",
+    "langchain-community>=0.2.9",
+    "langchain-text-splitters>=0.2.2",
+
+    # Vector Database
+    "chromadb>=0.5.5",
+
+    # Embeddings
+    "sentence-transformers>=3.0.1",
+
+    # Tokenization
+    "tiktoken>=0.7.0",
+
+    # Document loaders
+    "pypdf>=4.2.0",
+    "pymupdf>=1.24.0",
+
+    # Traditional DB
+    "sqlalchemy>=2.0.30",
+
+    # Utilities
+    "python-dotenv>=1.0.1",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "jupyter",
+    "ipykernel",
+    "black",
+    "ruff"
+]

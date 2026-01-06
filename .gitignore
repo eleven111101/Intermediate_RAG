@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
+
+# Data (raw binaries)
+data/raw/
+*.pdf
+
+# Vector DB persistence
+chroma_db/
+.chromadb/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
