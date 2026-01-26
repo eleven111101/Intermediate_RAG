@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run RAG Pipeline",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "rag_project.pipeline_runner",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

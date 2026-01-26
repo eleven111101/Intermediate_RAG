@@ -1,0 +1,48 @@
+# ============================================================
+# RAG CONFIGURATION
+# ============================================================
+
+project:
+  name: "intermediate-rag"
+  mode: "ingestion"   # ingestion | query (query later)
+
+# ------------------------------------------------------------
+# Paths
+# ------------------------------------------------------------
+paths:
+  data:
+    raw_dir: "rag_project/data/raw"
+
+  vector_store:
+    chroma_dir: "rag_project/vector_store/chroma"
+
+# ------------------------------------------------------------
+# Chunking configuration
+# ------------------------------------------------------------
+chunking:
+  recursive:
+    chunk_size: 1000
+    overlap: 200
+
+  semantic:
+    enabled: true   # keep true for now (learning phase)
+
+# ------------------------------------------------------------
+# Embeddings
+# ------------------------------------------------------------
+embeddings:
+  provider: "huggingface"
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+
+# ------------------------------------------------------------
+# ChromaDB
+# ------------------------------------------------------------
+chroma:
+  collection_name: "ashwa_rag"
+  persist: true
+
+# ------------------------------------------------------------
+# Retrieval (for later – not used now)
+# ------------------------------------------------------------
+retrieval:
+  top_k: 3

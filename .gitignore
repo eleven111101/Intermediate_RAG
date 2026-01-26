@@ -1,33 +1,68 @@
-# Python
+# ============================================================
+# Python bytecode & cache
+# ============================================================
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
 *.pyd
-*.egg-info/
-dist/
-build/
 
+# ============================================================
 # Virtual environments
+# ============================================================
 .venv/
 venv/
+env/
 
-# Jupyter
-.ipynb_checkpoints/
+# ============================================================
+# Build & packaging artifacts (CRITICAL)
+# ============================================================
+build/
+dist/
+*.egg-info/
 
-# Environment
+# ============================================================
+# VS Code
+# ============================================================
+.vscode/.ropeproject
+.vscode/settings.json
+
+# ============================================================
+# Environment variables
+# ============================================================
 .env
 
-# Data (raw binaries)
-data/raw/
-*.pdf
+# ============================================================
+# Vector databases / embeddings (DO NOT COMMIT)
+# ============================================================
+rag_project/vector_store/
+rag_project/**/vector_store/
 
-# Vector DB persistence
-chroma_db/
-.chromadb/
+# ============================================================
+# Logs & temp files
+# ============================================================
+*.log
+*.tmp
 
-# OS
+# ============================================================
+# OS files
+# ============================================================
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# ============================================================
+# Raw data files (DO NOT COMMIT DATA)
+# ============================================================
+rag_project/data/raw/
+rag_project/data/raw/**
+
+# Common document formats
+*.txt
+*.pdf
+*.docx
+*.csv
+
+# Ignore markdown data files, but keep README
+*.md
+!readme.md
+!README.md
+

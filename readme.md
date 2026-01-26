@@ -39,14 +39,14 @@ This project implements a complete RAG system that:
 └──────┬─────────────┘
        │
        ▼
-┌──────────────────┐
+┌───────────────────┐
 │ Local LLM (Ollama)│
-└──────┬───────────┘
+└──────┬────────────┘
        │
        ▼
-┌─────────────────────────┐
+┌──────────────────────────┐
 │ Grounded Answer + Sources│
-└─────────────────────────┘
+└──────────────────────────┘
 ```
 
 ## Project Structure
@@ -91,6 +91,45 @@ This model balances:
 - ✅ Speed (fast inference)
 - ✅ Size (compact vectors)
 - ✅ Quality (good semantic understanding)
+
+
+## 📌 Core RAG File Structure (One-Line Explanations)
+
+1. **rag/**
+       Root module containing the full Retrieval-Augmented Generation pipeline.
+
+2. **rag/loaders/**
+       Loads raw data from files or sources and converts it into clean text.
+       loader.py — Handles ingestion of PDFs, text, web pages, or datasets.
+
+3. **rag/chunking/**
+       Splits large documents into smaller, meaningful text chunks.
+       recursive.py — Recursively splits text by structure while preserving context.
+       semantic.py — Splits text based on semantic meaning rather than fixed size.
+
+4. **rag/embeddings/**
+       Converts text chunks into numerical vector embeddings.
+       hf_embeddings.py — Generates embeddings using HuggingFace models.
+
+5. **rag/vectorstore/**
+       Stores and retrieves embeddings using a vector database.
+       chroma_store.py — Manages embedding storage and similarity search via ChromaDB.
+
+6. **rag/retriever/**
+       Fetches the most relevant chunks for a given user query.
+       retriever.py — Performs vector similarity search.
+       reranker.py — Reorders retrieved chunks for higher relevance and accuracy.
+
+7. **rag/prompts/**
+       Contains prompt templates that guide how the LLM uses retrieved context.
+
+8. **rag/llm/**
+       Handles interaction with the language model for final answer generation.
+       ollama_llm.py — Sends context and queries to a local Ollama-hosted LLM.
+
+9. **__init__.py (all folders)**
+       Marks directories as Python modules and enables clean imports.
+
 
 ## Design Philosophy
 

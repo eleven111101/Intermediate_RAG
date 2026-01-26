@@ -1,34 +1,58 @@
 [project]
 name = "rag-intermediate"
 version = "0.1.0"
-description = "Intermediate RAG system with ChromaDB, local LLM, and metadata database"
+description = "Intermediate RAG system with Streamlit UI, ChromaDB, and modular orchestration"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11,<3.13"
 
 dependencies = [
-    # LangChain
+    # ----------------------------
+    # LangChain (modular, modern)
+    # ----------------------------
     "langchain>=0.2.10",
     "langchain-community>=0.2.9",
+    "langchain-core>=0.2.10",
     "langchain-text-splitters>=0.2.2",
 
+    # ----------------------------
     # Vector Database
+    # ----------------------------
     "chromadb>=0.5.5",
 
+    # ----------------------------
     # Embeddings
+    # ----------------------------
     "sentence-transformers>=3.0.1",
 
+    # ----------------------------
     # Tokenization
+    # ----------------------------
     "tiktoken>=0.7.0",
 
+    # ----------------------------
     # Document loaders
+    # ----------------------------
     "pypdf>=4.2.0",
     "pymupdf>=1.24.0",
 
-    # Traditional DB
+    # ----------------------------
+    # Traditional Database
+    # ----------------------------
     "sqlalchemy>=2.0.30",
 
-    # Utilities
+    # ----------------------------
+    # Web / UI
+    # ----------------------------
+    "streamlit>=1.30.0",
+    "fastapi>=0.101.1",
+    "uvicorn>=0.23.2",
+
+    # ----------------------------
+    # Async / Utils
+    # ----------------------------
     "python-dotenv>=1.0.1",
+    "aiofiles>=23.1.0",
+    "httpx>=0.24.1"
 ]
 
 [tool.uv]

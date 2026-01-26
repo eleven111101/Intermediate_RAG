@@ -16,8 +16,10 @@ folders = [
     "data/raw",
     "data/processed",
 
-    "notebooks",
     "scripts",
+
+    "utils",
+
 ]
 
 # Python files to create (relative to BASE_DIR)
@@ -46,13 +48,13 @@ python_files = [
     "rag/llm/__init__.py",
     "rag/llm/ollama_llm.py",
 
-    # Database
-    "db/models.py",
-    "db/session.py",
-
     # Scripts
-    "scripts/ingest.py",
-    "scripts/query.py",
+    "scripts/ingestion.py",
+    "scripts/query_rag.py",
+
+
+    # Utilities
+    "utils/logger.py",
 ]
 
 def create_folders(base_dir, folders):
