@@ -217,15 +217,15 @@ result = pipeline.query(
 
 | Feature | Status |
 |---------|--------|
-| Document ingestion | 🚧 In Progress |
-| Text chunking | 📋 Planned |
-| Embedding generation | 📋 Planned |
-| Vector storage (ChromaDB) | 📋 Planned |
-| Similarity search | 📋 Planned |
-| LLM integration | 📋 Planned |
-| Reranking | 📋 Planned |
-| Evaluation framework | 📋 Planned |
-| Query optimization | 📋 Planned |
+| Document ingestion | ✅ Done |
+| Text chunking | ✅ Done |
+| Embedding generation | ✅ Done|
+| Vector storage (ChromaDB) | ✅ Done|
+| Similarity search | 🚧 In Progress |
+| LLM integration | 🚧 In Progress |
+| Reranking | 🚧 In Progress |
+| Evaluation framework | 🚧 In Progress |
+| Query optimization | 🚧 In Progress |
 
 ## Roadmap
 
