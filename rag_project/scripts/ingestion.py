@@ -2,7 +2,7 @@ from pathlib import Path
 import uuid
 
 from rag_project.pipeline_runner import run_pipeline
-from rag_project.rag.vector_store.chroma_store import ChromaStore
+from rag_project.rag.chromaDB.chroma_store import ChromaStore
 
 
 def ingest():

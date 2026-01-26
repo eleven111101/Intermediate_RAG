@@ -6,7 +6,7 @@ from rag_project.rag.loaders.data_loader import DataLoader
 from rag_project.rag.chunking.recursive_chunking import RecursiveChunker
 from rag_project.rag.chunking.semantic_chunking import SemanticChunkerWrapper
 from rag_project.rag.embeddings.embedding_service import EmbeddingService
-from rag_project.rag.vector_store.chroma_store import ChromaStore
+from rag_project.rag.chromaDB.chroma_store import ChromaStore
 
 
 def load_config():
@@ -102,7 +102,11 @@ def run_pipeline():
         metadatas=metadatas,
     )
 
-    print("→ ChromaDB auto-persisted data to disk\n")
+    if chroma_dir.exists():
+        print(f"→ ChromaDB path exists: True")
+        print(f"→ ChromaDB files: {list(chroma_dir.iterdir())}")
+    else:
+        print(f"→ ChromaDB path exists: False (directory missing)")
 
 
     print(f"→ Stored {len(ids)} chunks in ChromaDB\n")

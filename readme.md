@@ -318,3 +318,51 @@ For questions or feedback, please open an issue on GitHub.
 ---
 
 **Built with ❤️ for production-grade RAG systems**
+
+📊 Vector Database Comparison by Use Case
+
+Use this table to choose a Vector DB based on what you actually need, not hype.
+
+Vector DB	Speed	Cost	Scale	Simplicity	Metadata	Cloud / Local	Learning vs Production	Best Use Case
+FAISS	⭐⭐⭐⭐⭐	⭐⭐⭐⭐⭐	⭐⭐⭐	⭐⭐	❌	Local	Learning / Research	Maximum speed, custom systems, research
+ChromaDB	⭐⭐⭐⭐	⭐⭐⭐⭐⭐	⭐⭐	⭐⭐⭐⭐⭐	✅	Local	Learning / Prototyping	RAG pipelines, local apps, fast iteration
+Qdrant	⭐⭐⭐⭐	⭐⭐⭐⭐	⭐⭐⭐⭐	⭐⭐⭐⭐	✅	Both	Learning → Production	Strong filtering, self-hosted or cloud
+Weaviate	⭐⭐⭐⭐	⭐⭐⭐	⭐⭐⭐⭐	⭐⭐⭐	✅	Both	Production	Hybrid search, schema-based retrieval
+Milvus	⭐⭐⭐⭐⭐	⭐⭐⭐	⭐⭐⭐⭐⭐	⭐⭐	✅	Both	Production (Large Scale)	Billions of vectors, distributed systems
+Pinecone	⭐⭐⭐⭐⭐	⭐⭐	⭐⭐⭐⭐⭐	⭐⭐⭐⭐	✅	Cloud	Production	Managed service, zero ops
+Elasticsearch	⭐⭐⭐	⭐⭐	⭐⭐⭐⭐	⭐⭐	✅	Both	Production	Keyword + vector hybrid search
+OpenSearch	⭐⭐⭐	⭐⭐⭐	⭐⭐⭐⭐	⭐⭐	✅	Both	Production	Open-source ES alternative
+🧠 How to read this table (important)
+Speed
+
+Raw similarity search performance
+
+FAISS & Milvus are fastest because they focus on math
+
+Cost
+
+⭐⭐⭐⭐⭐ = free / local
+
+⭐⭐ = paid / managed infra
+
+Scale
+
+How many vectors you can realistically handle
+
+ChromaDB → thousands to low millions
+
+Milvus / Pinecone → billions
+
+Simplicity
+
+How fast you can get started
+
+How little infra you must manage
+
+Metadata
+
+Ability to store + filter by document info
+
+Critical for real RAG systems
+
+

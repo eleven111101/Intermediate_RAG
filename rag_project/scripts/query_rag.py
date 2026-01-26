@@ -1,7 +1,7 @@
 
 from pathlib import Path
 
-from rag_project.rag.vector_store.chroma_store import ChromaStore
+from rag_project.rag.chromaDB.chroma_store import ChromaStore
 from rag_project.rag.embeddings.embedding_service import EmbeddingService
 
 
