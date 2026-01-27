@@ -12,7 +12,6 @@ folders = [
     "rag/llm",
     "rag/prompts",
 
-    "db",
     "data/raw",
     "data/processed",
 

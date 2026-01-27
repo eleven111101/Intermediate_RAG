@@ -1,43 +1,24 @@
 from pathlib import Path
-import sys
-import traceback
+import subprocess
 
-print("=== MAIN STARTED ===")
+from rag_project.checker_files import SystemChecker
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-print("PROJECT_ROOT:", PROJECT_ROOT)
 
-RAW_DIR = PROJECT_ROOT / "rag_project/data/raw"
-print("RAW_DIR EXISTS:", RAW_DIR.exists())
-print("RAW_DIR CONTENTS:", list(RAW_DIR.iterdir()))
+def main():
+    project_root = Path(__file__).resolve().parent
+    checker = SystemChecker(project_root)
 
-try:
-    from rag_project.rag.loaders.data_loader import DataLoader
-    from utils.logger import setup_logger
+    decision = checker.decide()
 
-    logger = setup_logger(
-        name="TEST",
-        log_dir=PROJECT_ROOT / "log",
-        log_file="test.log",
-        level="INFO",
-    )
+    if decision == "ingest":
+        subprocess.run(["python", "rag_project/scripts/ingestion.py"], check=True)
 
-    loader = DataLoader(
-        raw_data_dir=RAW_DIR,
-        logger=logger,
-    )
+    elif decision == "query":
+        subprocess.run(["python", "rag_project/scripts/query_rag.py"], check=True)
 
-    docs = loader.load()
+    else:
+        print("\n❌ System not ready. Fix issues and rerun.")
 
-    print("DOCUMENTS LOADED:", len(docs))
 
-    if docs:
-        print("FIRST 200 CHARS:\n")
-        print(docs[0].page_content[:200])
-
-except Exception:
-    print("=== ERROR ===")
-    traceback.print_exc()
-    sys.exit(1)
-
-print("=== MAIN FINISHED ===")
+if __name__ == "__main__":
+    main()

@@ -2,11 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run RAG Pipeline",
+      "name": "Run RAG System (Auto Ingest / Query)",
       "type": "debugpy",
       "request": "launch",
-      "module": "rag_project.pipeline_runner",
+      "program": "${workspaceFolder}/main.py",
       "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
       "justMyCode": true
     }
   ]
