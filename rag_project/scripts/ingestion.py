@@ -1,5 +1,9 @@
-from pathlib import Path
 import yaml
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(PROJECT_ROOT))
 
 from rag_project.rag.loaders.data_loader import DataLoader
 from rag_project.rag.chunking.recursive_chunking import RecursiveChunker

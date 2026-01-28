@@ -1,8 +1,14 @@
-from pathlib import Path
 import yaml
+import sys
+from pathlib import Path
 
-from rag_project.rag.retriever.retriever import DocumentRetriever
-from rag_project.rag.retriever.reranker import Reranker
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(PROJECT_ROOT))
+
+
+from rag_project.rag.retriever_files.retriever import DocumentRetriever
+from rag_project.rag.retriever_files.reranker import Reranker
+
 
 
 def main():
