@@ -613,13 +613,13 @@ We chose **ChromaDB** for this project because:
 | Vector storage (ChromaDB)   | ✅ Done          | High     | Persistent HNSW |
 | Similarity search           | ✅ Done          | High     | Top-K retrieval |
 | Automatic orchestration     | ✅ Done          | High     | Smart mode detection |
-| Reranking                   | 🚧 In Progress   | Medium   | Placeholder ready |
-| LLM integration             | 📋 Planned       | High     | Ollama integration |
-| Prompt templates            | 📋 Planned       | High     | Context formatting |
-| Evaluation framework        | 📋 Planned       | Medium   | Metrics & testing |
-| Query optimization          | 📋 Planned       | Medium   | Hybrid search |
-| Web UI (Streamlit)          | 📋 Planned       | Low      | User interface |
-| API (FastAPI)               | 📋 Planned       | Low      | REST endpoints |
+| Reranking                   | ✅ Done    | Medium   | Placeholder ready |
+| LLM integration             | ✅ Done        | High     | Ollama integration |
+| Prompt templates            | ✅ Done        | High     | Context formatting |
+| Evaluation framework        | 🚧 In Progress        | Medium   | Metrics & testing |
+| Query optimization          | 🚧 In Progress      | Medium   | Hybrid search |
+| Web UI (Streamlit)          | 🚧 In Progress       | Low      | User interface |
+| API (FastAPI)               | 🚧 In Progress        | Low      | REST endpoints |
 
 **Legend**: ✅ Done | 🚧 In Progress | 📋 Planned
 
@@ -635,8 +635,8 @@ We chose **ChromaDB** for this project because:
 - [x] Automatic orchestration
 
 #### Phase 2: LLM Integration 🚧 (NEXT)
-- [ ] Ollama integration
-- [ ] Prompt engineering
+- [x] Ollama integration
+- [x] Prompt engineering
 - [ ] Answer generation
 - [ ] Citation tracking
 - [ ] Context window management
