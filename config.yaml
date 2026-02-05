@@ -4,7 +4,8 @@
 
 project:
   name: "intermediate-rag"
-  mode: "ingestion"   # ingestion | query (query later)
+  stage: "learning"          # learning | production
+  entrypoint: "main.py"      # single entry point
 
 # ------------------------------------------------------------
 # Paths
@@ -17,32 +18,72 @@ paths:
     chroma_dir: "rag_project/vector_store/chroma"
 
 # ------------------------------------------------------------
-# Chunking configuration
+# Chunking Configuration
 # ------------------------------------------------------------
 chunking:
   recursive:
-    chunk_size: 1000
-    overlap: 200
+    chunk_size: 1000          # characters per chunk
+    overlap: 200              # overlap to preserve context
 
   semantic:
-    enabled: true   # keep true for now (learning phase)
+    enabled: true             # keep enabled for learning & quality
+    method: "langchain"       # semantic chunking via langchain
 
 # ------------------------------------------------------------
-# Embeddings
+# Embeddings Configuration
 # ------------------------------------------------------------
 embeddings:
   provider: "huggingface"
   model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  normalize: true             # cosine similarity friendly
+  batch_size: 32
 
 # ------------------------------------------------------------
-# ChromaDB
+# Vector Database (ChromaDB)
 # ------------------------------------------------------------
 chroma:
   collection_name: "ashwa_rag"
   persist: true
+  distance_metric: "cosine"   # cosine | l2 | ip
+  index_type: "hnsw"
 
 # ------------------------------------------------------------
-# Retrieval (for later – not used now)
+# Retrieval Configuration
 # ------------------------------------------------------------
 retrieval:
-  top_k: 3
+  top_k: 3                    # number of chunks to retrieve
+  fetch_k: 10                 # internal candidate pool (for reranking)
+  use_reranker: true
+
+# ------------------------------------------------------------
+# Reranking (optional – learning phase)
+# ------------------------------------------------------------
+reranker:
+  enabled: false              # enable later (cross-encoder)
+  model_name: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+# ------------------------------------------------------------
+# LLM Configuration (Ollama – Local)
+# ------------------------------------------------------------
+llm:
+  provider: "ollama"
+  model: "phi"                # confirmed working on your system
+  temperature: 0.2            # low = factual
+  max_tokens: 512
+  stream: false
+
+# ------------------------------------------------------------
+# Query / Prompt Settings
+# ------------------------------------------------------------
+query:
+  show_context: true          # print retrieved context in terminal
+  max_context_length: 2000    # safety cap
+  exit_command: "exit"
+
+# ------------------------------------------------------------
+# Logging / Monitoring
+# ------------------------------------------------------------
+logging:
+  level: "INFO"               # DEBUG | INFO | WARNING | ERROR
+  log_to_file: false
+  log_file: "logs/rag.log"

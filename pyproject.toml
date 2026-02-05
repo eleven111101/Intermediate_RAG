@@ -1,58 +1,65 @@
 [project]
 name = "rag-intermediate"
 version = "0.1.0"
-description = "Intermediate RAG system with Streamlit UI, ChromaDB, and modular orchestration"
+description = "Intermediate RAG system with ChromaDB, Ollama (local LLM), and modular orchestration"
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 
 dependencies = [
-    # ----------------------------
-    # LangChain (modular, modern)
-    # ----------------------------
+    # ============================================================
+    # LangChain (modular – pinned to modern ecosystem)
+    # ============================================================
     "langchain>=0.2.10",
-    "langchain-community>=0.2.9",
     "langchain-core>=0.2.10",
+    "langchain-community>=0.2.9",
     "langchain-text-splitters>=0.2.2",
 
-    # ----------------------------
+    # Experimental (SemanticChunker)
+    "langchain-experimental>=0.4.0",
+
+    # HuggingFace embeddings (new package – replaces deprecated import)
+    "langchain-huggingface>=0.1.0",
+
+    # ============================================================
     # Vector Database
-    # ----------------------------
+    # ============================================================
     "chromadb>=0.5.5",
 
-    # ----------------------------
-    # Embeddings
-    # ----------------------------
+    # ============================================================
+    # Embeddings / ML
+    # ============================================================
     "sentence-transformers>=3.0.1",
+    "torch",   # required by sentence-transformers
 
-    # ----------------------------
+    # ============================================================
     # Tokenization
-    # ----------------------------
+    # ============================================================
     "tiktoken>=0.7.0",
 
-    # ----------------------------
-    # Document loaders
-    # ----------------------------
+    # ============================================================
+    # Document Loaders
+    # ============================================================
     "pypdf>=4.2.0",
     "pymupdf>=1.24.0",
 
-    # ----------------------------
-    # Traditional Database
-    # ----------------------------
-    "sqlalchemy>=2.0.30",
-
-    # ----------------------------
-    # Web / UI
-    # ----------------------------
-    "streamlit>=1.30.0",
+    # ============================================================
+    # Backend / API (future)
+    # ============================================================
     "fastapi>=0.101.1",
     "uvicorn>=0.23.2",
 
-    # ----------------------------
-    # Async / Utils
-    # ----------------------------
+    # ============================================================
+    # UI (optional – later)
+    # ============================================================
+    "streamlit>=1.30.0",
+
+    # ============================================================
+    # Utilities
+    # ============================================================
     "python-dotenv>=1.0.1",
     "aiofiles>=23.1.0",
-    "httpx>=0.24.1"
+    "httpx>=0.24.1",
+    "pyyaml>=6.0.1"
 ]
 
 [tool.uv]

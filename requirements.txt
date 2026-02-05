@@ -1,14 +1,50 @@
+# ===============================
+# Core LangChain ecosystem
+# ===============================
 langchain>=0.2.10
+langchain-core>=0.2.10
 langchain-community>=0.2.9
 langchain-text-splitters>=0.2.2
+langchain-experimental>=0.4.0
+langchain-huggingface>=0.1.0
 
+# ===============================
+# Vector Database
+# ===============================
 chromadb>=0.5.5
 
+# ===============================
+# Embeddings & ML
+# ===============================
 sentence-transformers>=3.0.1
+torch
+
+# ===============================
+# Tokenization
+# ===============================
 tiktoken>=0.7.0
 
+# ===============================
+# Document loaders
+# ===============================
 pypdf>=4.2.0
 pymupdf>=1.24.0
 
-sqlalchemy>=2.0.30
+# ===============================
+# Local LLM (Ollama client via LangChain)
+# ===============================
+httpx>=0.24.1
+
+# ===============================
+# Config & Utilities
+# ===============================
+pyyaml>=6.0.1
 python-dotenv>=1.0.1
+aiofiles>=23.1.0
+
+# ===============================
+# API / UI (future-ready)
+# ===============================
+fastapi>=0.101.1
+uvicorn>=0.23.2
+streamlit>=1.30.0

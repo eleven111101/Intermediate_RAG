@@ -21,10 +21,10 @@ dist/
 *.egg-info/
 
 # ============================================================
-# VS Code
+# VS Code (keep launch.json, ignore local settings)
 # ============================================================
-.vscode/.ropeproject
-.vscode/settings.json
+.vscode/*
+!.vscode/launch.json
 
 # ============================================================
 # Environment variables
@@ -55,14 +55,10 @@ Thumbs.db
 rag_project/data/raw/
 rag_project/data/raw/**
 
-# Common document formats
+# ============================================================
+# Common document formats (data only)
+# ============================================================
 *.txt
 *.pdf
 *.docx
 *.csv
-
-# Ignore markdown data files, but keep README
-*.md
-!readme.md
-!README.md
-
