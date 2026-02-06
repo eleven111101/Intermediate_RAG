@@ -32,3 +32,5 @@ class DocumentRetriever:
         )
 
         return results.get("documents", [[]])[0]
+
+

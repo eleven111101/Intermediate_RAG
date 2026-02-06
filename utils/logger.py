@@ -2,25 +2,31 @@ import logging
 from pathlib import Path
 
 
-def setup_logger(name: str, log_dir: Path, log_file: str, level: str):
-    log_dir.mkdir(parents=True, exist_ok=True)
-
+def setup_logger(
+    name: str,
+    log_file: str | None = None,
+    level=logging.INFO,
+):
     logger = logging.getLogger(name)
-    logger.setLevel(level.upper())
-    logger.propagate = False
+    logger.setLevel(level)
 
-    if not logger.handlers:
-        formatter = logging.Formatter(
-            "[%(asctime)s] [%(levelname)s] %(name)s - %(message)s"
-        )
+    if logger.handlers:
+        return logger  # prevent duplicate logs
 
-        file_handler = logging.FileHandler(log_dir / log_file)
+    formatter = logging.Formatter(
+        "[%(asctime)s] [%(levelname)s] %(name)s - %(message)s"
+    )
+
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    # Optional file handler
+    if log_file:
+        Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+        file_handler = logging.FileHandler(log_file)
         file_handler.setFormatter(formatter)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-
         logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
 
     return logger

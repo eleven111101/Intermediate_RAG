@@ -2,15 +2,18 @@ from pathlib import Path
 import subprocess
 import sys
 
+# ------------------------------------------------------------
+# Ensure project root is importable
+# ------------------------------------------------------------
+PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 from rag_project.checker_files import SystemChecker
 
 
 def main():
-    # Absolute project root (where main.py lives)
-    project_root = Path(__file__).resolve().parent
-
     # Initialize system checker
-    checker = SystemChecker(project_root)
+    checker = SystemChecker(PROJECT_ROOT)
     decision = checker.decide()
 
     # Always use the SAME Python that is running this file
@@ -19,14 +22,14 @@ def main():
     if decision == "ingest":
         print("\n➡️ Running INGESTION pipeline...\n")
         subprocess.run(
-            [python_exec, "rag_project/scripts/ingestion.py"],
+            [python_exec, str(PROJECT_ROOT / "rag_project/scripts/ingestion.py")],
             check=True
         )
 
     elif decision == "query":
         print("\n➡️ Running QUERY pipeline...\n")
         subprocess.run(
-            [python_exec, "rag_project/scripts/query_rag.py"],
+            [python_exec, str(PROJECT_ROOT / "rag_project/scripts/query_rag.py")],
             check=True
         )
 
