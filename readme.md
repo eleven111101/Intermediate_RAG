@@ -797,19 +797,19 @@ For questions, feedback, or collaboration:
 
 ---
 ## ✨ LAST LOGS
-  [2026-02-06 20:37:48,845] [INFO] RAG-QUERY - Starting RAG query service
-  [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Vector DB Path: ..\INTERMEDIATE_RAG\rag_project\vector_store\chroma
-  [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Collection: rag_max
-  [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Top-K: 3
-  [2026-02-06 20:38:05,604] [INFO] RAG-QUERY - Retriever initialization took 16.75s
-  [2026-02-06 20:38:05,606] [INFO] RAG-QUERY - LLM initialization took 0.00s
-  [2026-02-06 20:38:14,329] [INFO] RAG-QUERY - User question: What is RAG?
-  [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Retrieval took 0.30s
-  [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Retrieved 3 chunks
-  [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Reranking took 0.00s
-  [2026-02-06 20:38:45,765] [INFO] RAG-QUERY - LLM generation took 31.13s
-  [2026-02-06 20:38:45,767] [INFO] RAG-QUERY - Answer generated successfully
-  [2026-02-06 20:39:01,993] [INFO] RAG-QUERY - User exited query loop
+    [2026-02-06 20:37:48,845] [INFO] RAG-QUERY - Starting RAG query service
+    [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Vector DB Path: ..\INTERMEDIATE_RAG\rag_project\vector_store\chroma
+    [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Collection: rag_max
+    [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Top-K: 3
+    [2026-02-06 20:38:05,604] [INFO] RAG-QUERY - Retriever initialization took 16.75s
+    [2026-02-06 20:38:05,606] [INFO] RAG-QUERY - LLM initialization took 0.00s
+    [2026-02-06 20:38:14,329] [INFO] RAG-QUERY - User question: What is RAG?
+    [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Retrieval took 0.30s
+    [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Retrieved 3 chunks
+    [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Reranking took 0.00s
+    [2026-02-06 20:38:45,765] [INFO] RAG-QUERY - LLM generation took 31.13s
+    [2026-02-06 20:38:45,767] [INFO] RAG-QUERY - Answer generated successfully
+    [2026-02-06 20:39:01,993] [INFO] RAG-QUERY - User exited query loop
 
 
 
