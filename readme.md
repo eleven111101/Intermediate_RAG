@@ -1,8 +1,9 @@
 # 🚀 Intermediate RAG System
 
-> A production-oriented Retrieval-Augmented Generation (RAG) pipeline built with open-source tools. This system prioritizes correctness, debuggability, and scalability over quick demos.
+> A **production-oriented Retrieval-Augmented Generation (RAG) system** built with open-source tools.  
+> Designed for **correctness, observability, and real-world usage**, not demos.
 
-[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 
@@ -10,14 +11,19 @@
 
 ## 📖 Overview
 
-This project implements a complete RAG system that:
+This project implements a **complete, end-to-end RAG system** with:
 
-- ✅ **Ingests and processes** documents (TXT, PDF)
-- ✅ **Generates semantic embeddings** using sentence transformers
-- ✅ **Performs vector similarity search** with ChromaDB
-- ✅ **Generates grounded answers** using local LLMs via Ollama
-- ✅ **Maintains metadata and logs** in a traditional database
-- ✅ **Automatic pipeline orchestration** with intelligent system checks
+- 📄 **Document upload and ingestion** - Support for PDF and TXT files
+- ✂️ **Recursive + semantic chunking** - Structure and meaning-aware text splitting
+- 🧠 **Embedding generation** - Sentence transformers for semantic understanding
+- 📦 **Persistent vector storage** - ChromaDB for efficient similarity search
+- 🔍 **Retrieval + reranking** - Top-K cosine search with optional reranking
+- 🤖 **Local LLM answer generation** - Privacy-first inference with Ollama
+- 🌐 **API layer** - FastAPI backend for programmatic access
+- 🖥️ **UI control panel** - Streamlit interface for easy interaction
+- 📊 **Full backend logging & timing** - Production-grade observability
+
+This is **not a tutorial project** — it mirrors how RAG systems are built in production environments.
 
 ---
 
@@ -25,82 +31,63 @@ This project implements a complete RAG system that:
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Automatic ingestion pipeline | ✅ Complete | Single entry-point execution |
-| Recursive + semantic chunking | ✅ Complete | Dual-strategy approach |
+| Document upload (UI) | ✅ Complete | Streamlit interface |
+| Ingestion pipeline | ✅ Complete | Logged & timed |
+| Recursive chunking | ✅ Complete | Structure-aware splitting |
+| Semantic chunking | ✅ Complete | Meaning-aware splitting |
 | Sentence-Transformer embeddings | ✅ Complete | 384-dimensional vectors |
-| Persistent ChromaDB vector store | ✅ Complete | HNSW + cosine similarity |
-| Query-time vector retrieval | ✅ Complete | Top-K similarity search |
-| Optional reranking layer | 🚧 In Progress | Placeholder implemented |
-| LLM answer generation | 📋 Planned | Next major milestone |
-
-**Legend**: ✅ Complete | 🚧 In Progress | 📋 Planned
+| ChromaDB persistent storage | ✅ Complete | Local vector database |
+| Vector similarity retrieval | ✅ Complete | Top-K cosine search |
+| Optional reranking | ✅ Implemented | Lightweight reranker |
+| Local LLM inference | ✅ Complete | Ollama integration |
+| FastAPI backend | ✅ Complete | RESTful JSON API |
+| Streamlit control panel | ✅ Complete | Upload, ingest, query |
+| System health checks | ✅ Complete | Database-aware monitoring |
+| Full logging & timing | ✅ Complete | Ingestion, query, system logs |
 
 ---
 
 ## 🏗️ Architecture
 
-### System Flow Diagram
+### High-Level Flow
 
 ```
-┌──────────────────┐
-│   User Query     │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│ Query Embedding  │ ← Sentence Transformers (384d)
-└────────┬─────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│ ChromaDB Vector Search  │ ← Cosine similarity search
-└────────┬────────────────┘
-         │
-         ▼
-┌────────────────────────┐
-│ Top-K Relevant Chunks  │ ← Retrieve 3-5 most relevant
-└────────┬───────────────┘
-         │
-         ▼
-┌───────────────────────┐
-│  Context Formatting   │ ← Build prompt with context
-└────────┬──────────────┘
-         │
-         ▼
-┌──────────────────────┐
-│ Local LLM (Ollama)   │ ← Generate grounded answer
-└────────┬─────────────┘
-         │
-         ▼
-┌─────────────────────────────┐
-│ Grounded Answer + Sources   │
-└─────────────────────────────┘
+User (UI / API)
+       ↓
+    FastAPI
+       ↓
+  Query Pipeline
+       ↓
+Vector Retrieval (ChromaDB)
+       ↓
+  Context Assembly
+       ↓
+  Local LLM (Ollama)
+       ↓
+Grounded Answer (JSON)
 ```
 
-### High-Level Architecture
+### Ingestion Flow
 
 ```
-main.py
-  └── checker_files.py
-        ├── checks raw data
-        ├── checks vector DB
-        └── decides: INGEST or QUERY
+Uploaded Documents
+    → Loaders (PDF/TXT)
+    → Recursive Chunking
+    → Semantic Chunking
+    → Embeddings Generation
+    → ChromaDB (Persistent Storage)
+```
 
-INGESTION FLOW
-  raw data
-    → loaders
-    → recursive chunking
-    → semantic chunking
-    → embeddings
-    → ChromaDB (persistent)
+### Query Flow
 
-QUERY FLOW
-  user query
-    → embeddings
-    → retriever (vector search)
-    → reranker (optional)
-    → context output
-    → LLM generation (planned)
+```
+User Query
+    → Query Embedding
+    → Vector Search (Top-K)
+    → Optional Reranking
+    → Context Formatting
+    → LLM Generation
+    → Grounded Answer
 ```
 
 ---
@@ -110,198 +97,171 @@ QUERY FLOW
 ```
 INTERMEDIATE_RAG/
 │
-├── main.py                       # Single entry point - automatic mode detection
-├── config.yaml                   # System configuration
-├── requirements.txt              # Pinned dependencies
-├── pyproject.toml               # Project metadata
-├── .gitignore
-├── LICENSE
-└── README.md
+├── frontend/
+│   └── streamlit_app.py          # UI control panel
 │
 ├── rag_project/
-│   ├── checker_files.py          # System validator & decision engine
+│   ├── api/
+│   │   └── app.py                # FastAPI service
+│   │
+│   ├── checker_files.py          # Database & system checks
 │   │
 │   ├── scripts/
-│   │   ├── ingestion.py          # Ingestion pipeline orchestrator
-│   │   └── query_rag.py          # Query pipeline orchestrator
+│   │   ├── ingestion.py          # Document ingestion pipeline
+│   │   └── query_rag.py          # Query processing pipeline
 │   │
-│   └── rag/                      # Core RAG pipeline logic
-│       │
-│       ├── __init__.py
-│       │
-│       ├── loaders/              # Document ingestion
-│       │   ├── __init__.py
-│       │   └── loader.py         # PDF, TXT, web loaders
-│       │
-│       ├── chunking/             # Text splitting strategies
-│       │   ├── __init__.py
-│       │   ├── recursive.py      # Recursive character splitting
-│       │   └── semantic.py       # Semantic-based chunking
-│       │
-│       ├── embeddings/           # Vector generation
-│       │   ├── __init__.py
-│       │   └── hf_embeddings.py  # HuggingFace sentence transformers
-│       │
-│       ├── chromaDB/             # Vector database management
-│       │   ├── __init__.py
-│       │   └── chroma_store.py   # ChromaDB integration
-│       │
-│       ├── retriever/            # Search and ranking
-│       │   ├── __init__.py
-│       │   ├── retriever.py      # Similarity search
-│       │   └── reranker.py       # Result reranking (placeholder)
-│       │
+│   └── rag/
+│       ├── loaders/              # PDF / TXT document loaders
+│       ├── chunking/             # Recursive + semantic chunking
+│       ├── embeddings/           # Sentence transformer integration
+│       ├── chromaDB/             # Vector store management
+│       ├── retriever_files/      # Retriever + reranker logic
 │       ├── prompts/              # LLM prompt templates
-│       │   ├── __init__.py
-│       │   └── templates.py      # System/user prompts
-│       │
-│       └── llm/                  # LLM integration
-│           ├── __init__.py
-│           └── ollama_llm.py     # Local Ollama client (planned)
+│       └── llm/                  # Ollama LLM integration
 │
-├── db/                           # Metadata & logging
-│   ├── __init__.py
-│   └── models.py                 # SQLite/PostgreSQL schemas
+├── utils/
+│   ├── logger.py                 # Unified logging utility
+│   └── timer.py                  # Execution timing decorator
+│
+├── logs/                         # Runtime logs (gitignored)
+│   ├── query.log
+│   ├── ingestion.log
+│   ├── system.log
+│   └── app.log
 │
 ├── data/
-│   ├── raw/                      # Source documents (gitignored)
-│   ├── processed/                # Cleaned text chunks
-│   └── chroma/                   # Vector database storage (gitignored)
+│   └── raw/                      # Uploaded documents storage
 │
 ├── vector_store/
 │   └── chroma/                   # Persistent ChromaDB storage
 │
-├── notebooks/                    # Jupyter experiments
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_chunking_strategies.ipynb
-│   └── 03_retrieval_evaluation.ipynb
-│
-└── tests/                        # Unit & integration tests
-    ├── test_chunking.py
-    ├── test_retrieval.py
-    └── test_pipeline.py
+├── config.yaml                   # Central configuration file
+├── requirements.txt              # Python dependencies
+├── README.md                     # This file
+└── .gitignore                    # Git ignore rules
 ```
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Component          | Technology                                    | Purpose                           |
-|--------------------|-----------------------------------------------|-----------------------------------|
-| **Language**       | Python 3.12+                                  | Core programming language         |
-| **Framework**      | LangChain                                     | RAG orchestration                 |
-| **Vector Store**   | ChromaDB                                      | Embedding storage & search        |
-| **Embeddings**     | Sentence Transformers (all-MiniLM-L6-v2)      | Text → 384d vectors               |
-| **LLM**            | Ollama (llama2, mistral, etc.)                | Local inference (planned)         |
-| **Database**       | SQLite / PostgreSQL                           | Metadata & logs                   |
-| **Package Mgr**    | uv / pip                                      | Dependency management             |
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Language** | Python 3.12+ | Core development language |
+| **Embeddings** | Sentence Transformers<br>(MiniLM-L6-v2) | Text to vector conversion |
+| **Vector DB** | ChromaDB | Similarity search & storage |
+| **LLM** | Ollama (local) | Answer generation |
+| **API** | FastAPI | Backend REST interface |
+| **UI** | Streamlit | Interactive control panel |
+| **Logging** | Python logging | System observability |
 
 ---
 
-## 🧠 Understanding the Components
+## 🧠 Embedding Model Details
 
-### What is RAG?
+**Model:** `sentence-transformers/all-MiniLM-L6-v2`
 
-Retrieval-Augmented Generation (RAG) combines:
+A lightweight, fast, and effective embedding model optimized for semantic similarity tasks.
 
-- **Information Retrieval** (vector search)
-- **Language Models** (LLMs)
+**Specifications:**
+- **Dimensions:** 384
+- **Speed:** ⭐⭐⭐⭐⭐ (Very fast inference)
+- **Accuracy:** ⭐⭐⭐⭐ (Strong semantic understanding)
+- **Memory:** ⭐⭐⭐⭐⭐ (Low memory footprint)
 
-Instead of relying only on model memory, the LLM is given relevant retrieved context at query time.
-
-```
-User Query
-  → Embed query
-  → Retrieve relevant chunks
-  → Provide context to LLM
-  → Generate grounded answer
-```
-
-### Embedding Model: all-MiniLM-L6-v2
-
-We use `sentence-transformers/all-MiniLM-L6-v2` which produces **384-dimensional embeddings**:
-
-- ✅ **384 dimensions** capture semantic meaning
-- ✅ Each dimension represents a fragment of context
-- ✅ Similar meanings → vectors close in space
-- ✅ No single dimension is interpretable
-- ✅ **Meaning emerges from all 384 dimensions combined**
-
-#### Why This Model?
-
-| Criteria      | Rating | Notes                                  |
-|---------------|--------|----------------------------------------|
-| Speed         | ⭐⭐⭐⭐⭐ | Fast inference (~5ms per sentence)     |
-| Size          | ⭐⭐⭐⭐⭐ | Compact vectors (384d vs 768d/1024d)   |
-| Quality       | ⭐⭐⭐⭐   | Good semantic understanding            |
-| Memory        | ⭐⭐⭐⭐⭐ | Low RAM usage                          |
+**Why this model?**
+- Fast inference suitable for real-time applications
+- Low memory usage enables deployment on modest hardware
+- Strong semantic similarity performance for RAG tasks
+- Well-supported by the Sentence Transformers library
 
 ---
 
-## 📌 Core RAG Components
+## 📦 Vector Database: ChromaDB
 
-### 1. **rag/**
-Root module containing the full Retrieval-Augmented Generation pipeline.
+**Why ChromaDB?**
 
-### 2. **rag/loaders/**
-Loads raw data from files or sources and converts it into clean text.
-- `loader.py` — Handles ingestion of PDFs, text, web pages, or datasets.
+- ✅ **Local-first** - No external server required
+- ✅ **Zero setup** - Works out of the box
+- ✅ **Metadata support** - Rich filtering capabilities
+- ✅ **Persistent storage** - Data survives restarts
+- ✅ **Migration path** - Easy to upgrade to Qdrant/Weaviate if needed
 
-### 3. **rag/chunking/**
-Splits large documents into smaller, meaningful text chunks.
-- `recursive.py` — Recursively splits text by structure while preserving context.
-- `semantic.py` — Splits text based on semantic meaning rather than fixed size.
-
-**Chunking Strategy:**
-```
-Recursive chunking → preserves structure
-Semantic chunking → improves meaning coherence
-Both applied sequentially (intermediate RAG level)
-```
-
-### 4. **rag/embeddings/**
-Converts text chunks into numerical vector embeddings.
-- `hf_embeddings.py` — Generates embeddings using HuggingFace models.
-
-### 5. **rag/chromaDB/**
-Stores and retrieves embeddings using a vector database.
-- `chroma_store.py` — Manages embedding storage and similarity search via ChromaDB.
-- Uses HNSW + cosine similarity for efficient retrieval
-
-### 6. **rag/retriever/**
-Fetches the most relevant chunks for a given user query.
-- `retriever.py` — Performs vector similarity search.
-- `reranker.py` — Reorders retrieved chunks for higher relevance and accuracy (placeholder).
-
-### 7. **rag/prompts/**
-Contains prompt templates that guide how the LLM uses retrieved context.
-- `templates.py` — System and user prompt templates.
-
-### 8. **rag/llm/**
-Handles interaction with the language model for final answer generation.
-- `ollama_llm.py` — Sends context and queries to a local Ollama-hosted LLM (planned).
-
-### 9. **checker_files.py**
-System validator and decision engine that:
-- Checks if raw data exists
-- Checks if vector DB exists
-- Automatically decides: INGEST or QUERY mode
-- No manual flags or mode switching required
+ChromaDB provides the perfect balance between simplicity and functionality for intermediate RAG systems.
 
 ---
 
-## 🎯 Design Philosophy
+## 🌐 FastAPI Backend
 
-| Principle                  | Description                                                          |
-|----------------------------|----------------------------------------------------------------------|
-| **Retrieval Quality First** | The quality of retrieved context matters more than LLM sophistication |
-| **Honest Uncertainty**      | System rejects queries when relevant knowledge is missing            |
-| **No Hallucinations**       | Answers must be grounded in retrieved documents                      |
-| **Progressive Complexity**  | Simple → Correct → Scalable                                          |
-| **Clean Separation**        | Modular design for easy testing and deployment                       |
-| **Automatic Orchestration** | Intelligent system checks eliminate manual configuration             |
+The API provides a clean, RESTful interface for RAG queries.
 
-> **Key Principle**: RAG is **80% retrieval and data quality**, **20% generation**.
+**Main Endpoint:** `POST /query`
+
+**Request Format:**
+```json
+{
+  "query": "What is Retrieval-Augmented Generation?"
+}
+```
+
+**Response Format:**
+```json
+{
+  "answer": "Retrieval-Augmented Generation (RAG) is...",
+  "sources": [
+    {
+      "content": "...",
+      "metadata": {...}
+    }
+  ],
+  "retrieval_time": 0.22,
+  "generation_time": 31.13
+}
+```
+
+**Features:**
+- JSON-only responses for easy integration
+- Defensive error handling (`no_context`, `invalid_query`)
+- Comprehensive logging with execution timing
+- Health check endpoints for monitoring
+
+---
+
+## 🖥️ Streamlit Control Panel
+
+An intuitive web interface for managing your RAG system.
+
+**Features:**
+- 📄 **Upload documents** - Drag and drop PDF/TXT files
+- ⚙️ **Run ingestion** - Process documents manually
+- 📦 **Database status** - Monitor vector store health
+- 💬 **Query interface** - Interactive RAG queries
+- 🛑 **Safe operations** - Graceful handling when DB is missing
+
+**Design Philosophy:**
+The UI is a thin client that delegates all logic to backend services, ensuring clean separation of concerns.
+
+---
+
+## 📊 Logging & Observability
+
+All backend operations are logged with timestamps and execution metrics for production-grade observability.
+
+| Log File | Purpose |
+|----------|---------|
+| `query.log` | Query processing, retrieval, and LLM timing |
+| `ingestion.log` | Document chunking and embedding generation |
+| `system.log` | Database health checks and system status |
+| `app.log` | API lifecycle and request handling |
+
+**Example Log Output:**
+```
+[2025-02-09 14:23:45] [INFO] RAG-QUERY - Query received: "What is RAG?"
+[2025-02-09 14:23:45] [INFO] RAG-QUERY - Retrieval took 0.22s
+[2025-02-09 14:23:45] [INFO] RAG-QUERY - Retrieved 5 chunks
+[2025-02-09 14:24:16] [INFO] RAG-QUERY - LLM generation took 31.13s
+[2025-02-09 14:24:16] [INFO] RAG-QUERY - Response generated successfully
+```
 
 ---
 
@@ -309,407 +269,191 @@ System validator and decision engine that:
 
 ### Prerequisites
 
-- ✅ Python 3.12+
-- ✅ [Ollama](https://ollama.ai/) installed and running (for LLM generation - planned)
-- ✅ `uv` package manager (optional but recommended)
+Before you begin, ensure you have the following installed:
+
+- **Python 3.12+** - [Download](https://www.python.org/downloads/)
+- **Ollama** - [Installation Guide](https://ollama.ai/)
+- **pip** or **uv** - Python package manager
 
 ### Installation
 
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd INTERMEDIATE_RAG
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Pull an Ollama model:**
+   ```bash
+   ollama pull mistral
+   ```
+   
+   *Alternatively, you can use other models like `llama2`, `phi`, etc.*
+
+4. **Configure the system:**
+   
+   Edit `config.yaml` to customize:
+   - Embedding model
+   - Chunk sizes
+   - LLM model name
+   - Vector store settings
+
+### Running the System
+
+**1. Start the FastAPI Backend:**
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd INTERMEDIATE_RAG
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Or using uv (faster)
-uv pip install -r requirements.txt
-
-# Pull an LLM model (if using Ollama - for future use)
-ollama pull llama2
+uvicorn rag_project.api.app:app --reload
 ```
+The API will be available at `http://localhost:8000`
 
-### Quick Start
-
+**2. Launch the Streamlit UI:**
 ```bash
-# 1. Place your documents in data/raw/
-# Example: data/raw/company_docs.pdf, data/raw/report.txt
-
-# 2. Run the system (automatic mode detection)
-python main.py
-
-# System will automatically:
-# - Detect if ingestion is needed
-# - Process documents and build vector index
-# - OR allow you to query if index exists
+streamlit run frontend/streamlit_app.py
 ```
+The UI will open automatically in your browser at `http://localhost:8501`
 
-### How the System Runs
+### First Steps
 
-**Single Command:**
+1. **Upload documents** via the Streamlit UI
+2. **Run ingestion** to process and embed your documents
+3. **Query your RAG system** and get grounded answers
+
+---
+
+## 🎯 Design Philosophy
+
+This project follows production-first principles:
+
+1. **Retrieval quality > generation** - 80% of RAG success comes from retrieval
+2. **No hallucinations** - All answers grounded in retrieved context
+3. **Defensive execution** - Graceful error handling at every layer
+4. **Observable pipelines** - Comprehensive logging and timing
+5. **Modular & testable** - Clean separation of concerns
+6. **Production-first mindset** - Built to scale, not just demo
+
+> "RAG is 80% retrieval, 20% generation. Get the retrieval right first."
+
+---
+
+## 🔍 Key Components Explained
+
+### Chunking Strategy
+
+**Recursive Chunking:**
+- Splits documents based on structural elements (paragraphs, sentences)
+- Preserves document hierarchy
+- Maintains context boundaries
+
+**Semantic Chunking:**
+- Groups text based on meaning similarity
+- Creates coherent, topically-focused chunks
+- Reduces context fragmentation
+
+### Retrieval Process
+
+1. **Query Embedding** - Convert user query to 384-d vector
+2. **Similarity Search** - Find top-K most similar chunks using cosine similarity
+3. **Optional Reranking** - Re-score results for better relevance
+4. **Context Assembly** - Combine retrieved chunks into coherent context
+
+### LLM Integration
+
+- **Local inference** via Ollama for privacy and control
+- **Prompt engineering** to prevent hallucinations
+- **Context grounding** to ensure factual responses
+- **Streaming support** for better user experience
+
+---
+
+## 📈 Performance Considerations
+
+**Typical Query Performance:**
+- Retrieval: 0.1 - 0.5 seconds
+- LLM Generation: 5 - 60 seconds (depending on model and hardware)
+- Total: 5 - 60 seconds end-to-end
+
+**Optimization Tips:**
+- Use smaller Ollama models (e.g., `mistral`, `phi`) for faster inference
+- Adjust `top_k` parameter to balance quality and speed
+- Consider GPU acceleration for embedding generation
+- Implement caching for frequently asked queries
+
+---
+
+## 🧪 Testing & Validation
+
+**System Health Checks:**
 ```bash
-python main.py
+# Check if vector store is accessible
+python rag_project/checker_files.py
 ```
 
-**What Happens Automatically:**
-
-1. **System Check**
-   - Raw data exists?
-   - ChromaDB exists?
-
-2. **Decision**
-   - ❌ No DB → run ingestion
-   - ✅ DB exists → run query
-
-**No manual flags. No mode switching.**
-
----
-
-## 📥 Ingestion Pipeline
-
-### What It Does
-
-1. Load raw documents (.txt, .pdf)
-2. Recursive chunking (structure-based)
-3. Temporary embeddings
-4. Semantic chunking (meaning-based)
-5. Final embeddings
-6. Store vectors in ChromaDB (persistent)
-
-### Sample Output
-
+**API Health:**
+```bash
+curl http://localhost:8000/health
 ```
-==============================
- RAG INGESTION PIPELINE STARTED
-==============================
 
-[STEP 1] Loading raw documents
-→ Loaded documents: 1
-
-[STEP 2] Recursive chunking
-→ Recursive chunks: 67
-
-[STEP 3] Generating temporary embeddings
-→ Temporary embeddings generated
-
-[STEP 4] Semantic chunking
-→ Semantic chunks: 128
-
-[STEP 5] Generating final embeddings
-→ Final embeddings: 128
-
-[STEP 6] Storing in ChromaDB
-→ Stored 128 chunks in ChromaDB
-
-==============================
- INGESTION PIPELINE COMPLETED
-==============================
+**Query Testing:**
+```bash
+curl -X POST http://localhost:8000/query \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What is RAG?"}'
 ```
 
 ---
 
-## 🔍 Query Pipeline
+## 🛣️ Roadmap
 
-### What It Does
-
-1. Load persistent ChromaDB
-2. Display DB metadata
-3. Accept user query
-4. Embed query
-5. Retrieve top-K chunks
-6. (Optional) rerank
-7. Print retrieved context
-8. (Planned) Generate answer with LLM
-
-### Sample Output
-
-```
-==============================
- RAG QUERY SERVICE
-==============================
-Vector DB Path  : vector_store/chroma
-Collection Name: documents
-Top-K          : 5
-==============================
-
-Ask a question: What is The Ashwa Riders?
-
-=== RETRIEVED CONTEXT ===
-
-[1] THE ASHWA RIDERS
-OFF-ROAD ATV BUSINESS OVERVIEW...
-----
-
-[2] Marketing Strategy
-The Ashwa Riders focuses on...
-----
-```
-
----
-
-## 💻 Usage Examples
-
-### Basic Query
-
-```python
-from rag import RAGPipeline
-
-# Initialize the pipeline
-pipeline = RAGPipeline()
-
-# Query the system
-result = pipeline.query("What is the main topic discussed in the documents?")
-
-print(f"Answer: {result['answer']}")
-print(f"Sources: {result['sources']}")
-print(f"Confidence: {result['confidence']}")
-```
-
-### Advanced Configuration
-
-```python
-from rag import RAGPipeline
-
-pipeline = RAGPipeline(
-    chunk_size=512,
-    chunk_overlap=50,
-    top_k=5,
-    model_name="llama2",
-    temperature=0.7
-)
-
-result = pipeline.query(
-    query="Explain the product roadmap",
-    temperature=0.7,
-    max_tokens=500,
-    return_sources=True
-)
-```
-
-### Batch Processing
-
-```python
-from rag import RAGPipeline
-
-pipeline = RAGPipeline()
-
-queries = [
-    "What are the key features?",
-    "Who are the competitors?",
-    "What is the pricing model?"
-]
-
-results = pipeline.batch_query(queries)
-
-for query, result in zip(queries, results):
-    print(f"Q: {query}")
-    print(f"A: {result['answer']}\n")
-```
-
----
-
-## ⚙️ Configuration
-
-Edit `config.yaml` to customize system behavior:
-
-```yaml
-# Vector Store
-chroma:
-  persist_directory: "./vector_store/chroma"
-  collection_name: "documents"
-  distance_metric: "cosine"  # cosine, l2, ip
-
-# Embeddings
-embeddings:
-  model: "sentence-transformers/all-MiniLM-L6-v2"
-  device: "cpu"  # cpu, cuda, mps
-  batch_size: 32
-
-# Chunking
-chunking:
-  # Recursive chunking
-  chunk_size: 512
-  chunk_overlap: 50
-  strategy: "recursive"  # recursive, semantic
-  
-  # Semantic chunking
-  similarity_threshold: 0.5
-  min_chunk_size: 100
-
-# Retrieval
-retrieval:
-  top_k: 5
-  score_threshold: 0.7
-  rerank: false
-  rerank_top_n: 10
-
-# LLM (Planned)
-llm:
-  provider: "ollama"
-  model: "llama2"  # llama2, mistral, codellama
-  base_url: "http://localhost:11434"
-  temperature: 0.7
-  max_tokens: 500
-  top_p: 0.9
-
-# Logging
-logging:
-  level: "INFO"
-  file: "logs/rag.log"
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-```
-
----
-
-## 📊 Vector Database Comparison
-
-Use this table to choose a Vector DB based on your actual needs, not hype.
-
-| Vector DB        | Speed | Cost | Scale | Simplicity | Metadata | Cloud/Local | Stage              | Best Use Case                          |
-|------------------|-------|------|-------|------------|----------|-------------|--------------------|----------------------------------------|
-| **FAISS**        | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ❌ | Local | Learning/Research | Maximum speed, custom systems, research |
-| **ChromaDB**     | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ | Local | Learning/Prototyping | RAG pipelines, local apps, fast iteration |
-| **Qdrant**       | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ | Both | Learning→Production | Strong filtering, self-hosted or cloud |
-| **Weaviate**     | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ✅ | Both | Production | Hybrid search, schema-based retrieval |
-| **Milvus**       | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ✅ | Both | Production (Large) | Billions of vectors, distributed systems |
-| **Pinecone**     | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ | Cloud | Production | Managed service, zero ops |
-| **Elasticsearch**| ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ | ✅ | Both | Production | Keyword + vector hybrid search |
-| **OpenSearch**   | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ | ✅ | Both | Production | Open-source ES alternative |
-
-### 🧠 How to Read This Table
-
-| Dimension    | Explanation                                                                 |
-|--------------|-----------------------------------------------------------------------------|
-| **Speed**    | Raw similarity search performance (FAISS & Milvus are fastest)              |
-| **Cost**     | ⭐⭐⭐⭐⭐ = free/local, ⭐⭐ = paid/managed infrastructure                          |
-| **Scale**    | How many vectors you can handle (ChromaDB → millions, Milvus → billions)    |
-| **Simplicity**| How fast you can get started with minimal infrastructure                   |
-| **Metadata** | Ability to store & filter by document info (critical for real RAG systems)  |
-
-### 💡 Our Choice: ChromaDB
-
-We chose **ChromaDB** for this project because:
-
-- ✅ **Zero ops** - No server setup required
-- ✅ **Local first** - Perfect for learning & prototyping
-- ✅ **Metadata support** - Filter by document properties
-- ✅ **Fast enough** - Handles millions of vectors
-- ✅ **Easy to upgrade** - Can migrate to Qdrant/Weaviate later
-- ✅ **Persistent storage** - No re-ingestion needed
-
----
-
-## 📊 Development Status & Roadmap
-
-### Current Status
-
-| Feature                     | Status           | Priority | Notes |
-|-----------------------------|------------------|----------|-------|
-| Document ingestion          | ✅ Done          | High     | PDF, TXT supported |
-| Recursive text chunking     | ✅ Done          | High     | Structure-based |
-| Semantic text chunking      | ✅ Done          | High     | Meaning-based |
-| Embedding generation        | ✅ Done          | High     | all-MiniLM-L6-v2 |
-| Vector storage (ChromaDB)   | ✅ Done          | High     | Persistent HNSW |
-| Similarity search           | ✅ Done          | High     | Top-K retrieval |
-| Automatic orchestration     | ✅ Done          | High     | Smart mode detection |
-| Reranking                   | ✅ Done    | Medium   | Placeholder ready |
-| LLM integration             | ✅ Done        | High     | Ollama integration |
-| Prompt templates            | ✅ Done        | High     | Context formatting |
-| Evaluation framework        | 🚧 In Progress        | Medium   | Metrics & testing |
-| Query optimization          | 🚧 In Progress      | Medium   | Hybrid search |
-| Web UI (Streamlit)          | 🚧 In Progress       | Low      | User interface |
-| API (FastAPI)               | 🚧 In Progress        | Low      | REST endpoints |
-
-**Legend**: ✅ Done | 🚧 In Progress | 📋 Planned
-
-### Roadmap
-
-#### Phase 1: Core Pipeline ✅ (COMPLETE)
-- [x] Document ingestion (PDF, TXT)
-- [x] Recursive chunking
-- [x] Semantic chunking
-- [x] Vector embeddings (all-MiniLM-L6-v2)
-- [x] ChromaDB integration
-- [x] Similarity search
-- [x] Automatic orchestration
-
-#### Phase 2: LLM Integration 🚧 (NEXT)
-- [x] Ollama integration
-- [x] Prompt engineering
-- [ ] Answer generation
-- [ ] Citation tracking
-- [ ] Context window management
-
-#### Phase 3: Enhancement 📋
-- [ ] Cross-encoder reranking
-- [ ] Hybrid search (vector + keyword)
-- [ ] Query expansion
+**Planned Enhancements:**
+- [ ] Support for more document types (DOCX, CSV, JSON)
+- [ ] Advanced reranking models (cross-encoders)
+- [ ] Query expansion and reformulation
 - [ ] Multi-query retrieval
-- [ ] Metadata filtering
-
-#### Phase 4: Production 📋
-- [ ] Evaluation metrics (precision, recall, F1)
-- [ ] Performance monitoring
-- [ ] API deployment (FastAPI)
-- [ ] Streamlit web UI
+- [ ] Hybrid search (vector + keyword)
+- [ ] User feedback loop for retrieval quality
 - [ ] Docker containerization
-- [ ] CI/CD pipeline
+- [ ] Deployment guides (AWS, GCP, Azure)
 
 ---
 
-## 🧪 Testing
+## 🐛 Troubleshooting
 
-```bash
-# Run all tests
-pytest
+**Common Issues:**
 
-# Run with coverage
-pytest --cov=rag tests/
+**Issue:** `ModuleNotFoundError: No module named 'chromadb'`
+- **Solution:** Run `pip install -r requirements.txt`
 
-# Run specific test module
-pytest tests/test_retrieval.py -v
+**Issue:** `Connection refused to Ollama`
+- **Solution:** Ensure Ollama is running: `ollama serve`
 
-# Run with verbose output
-pytest -vv
+**Issue:** `No documents in vector store`
+- **Solution:** Upload and ingest documents via the Streamlit UI
 
-# Generate HTML coverage report
-pytest --cov=rag --cov-report=html tests/
+**Issue:** Slow query responses
+- **Solution:** Use a smaller Ollama model or enable GPU acceleration
 
-# Run only unit tests
-pytest tests/ -m unit
-
-# Run only integration tests
-pytest tests/ -m integration
-```
+For more help, check the logs in the `logs/` directory.
 
 ---
 
-## 🧩 Why This Architecture?
+## 📊 System Status
 
-1. **Clean separation of concerns**
-   - Each component has a single responsibility
-   - Easy to test and debug
+| Component | Status |
+|-----------|--------|
+| Ingestion Pipeline | ✅ Complete |
+| Vector Database | ✅ Complete |
+| Retrieval System | ✅ Complete |
+| LLM Integration | ✅ Complete |
+| FastAPI Backend | ✅ Complete |
+| Streamlit UI | ✅ Complete |
+| Logging & Monitoring | ✅ Complete |
 
-2. **Production-aligned structure**
-   - Follows industry best practices
-   - Scales from prototype to production
-
-3. **Easy to convert into microservices**
-   - Each module can become a FastAPI service
-   - Ready for containerization
-
-4. **Easy DB or model swaps**
-   - Abstracted interfaces
-   - Plug-and-play components
-
-5. **Debuggable and testable**
-   - Clear data flow
-   - Comprehensive logging
-
-6. **Automatic orchestration**
-   - No manual mode switching
-   - Intelligent system checks
+**Overall Status:** ✅ System is stable and production-ready
 
 ---
 
@@ -717,38 +461,18 @@ pytest tests/ -m integration
 
 Contributions are welcome! Please follow these guidelines:
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Development Setup
-
-```bash
-# Install dev dependencies
-pip install -r requirements-dev.txt
-
-# Run linting
-ruff check .
-
-# Format code
-black .
-
-# Type checking
-mypy rag/
-
-# Run tests
-pytest
-```
-
-### Code Style
-
-- Follow PEP 8
-- Use type hints
-- Write docstrings (Google style)
-- Keep functions focused and small
-- Add tests for new features
+**Code Standards:**
+- Follow PEP 8 style guidelines
+- Add docstrings to all functions
+- Include type hints
+- Write tests for new features
+- Update documentation as needed
 
 ---
 
@@ -758,80 +482,36 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Acknowledgements
 
-- **LangChain** - RAG framework and orchestration
-- **ChromaDB** - Vector storage and similarity search
-- **Sentence Transformers** - High-quality embeddings
-- **Ollama** - Local LLM inference
-- **HuggingFace** - Open-source models and community
+This project builds upon excellent open-source tools and libraries:
 
----
+- **[LangChain](https://github.com/langchain-ai/langchain)** - Document loaders and text splitting
+- **[ChromaDB](https://github.com/chroma-core/chroma)** - Vector database
+- **[Sentence Transformers](https://github.com/UKPLab/sentence-transformers)** - Embedding models
+- **[Ollama](https://ollama.ai/)** - Local LLM inference
+- **[HuggingFace](https://huggingface.co/)** - Model hosting and distribution
+- **[FastAPI](https://fastapi.tiangolo.com/)** - Modern API framework
+- **[Streamlit](https://streamlit.io/)** - UI framework
 
-## 📧 Contact
-
-For questions, feedback, or collaboration:
-
-- 📧 **Email**: jyotiradityaparihar@gmail.com
-- 💬 **GitHub Issues**: [Open an issue](https://github.com/your-repo/issues)
-- 💼 **LinkedIn**: [Jyotiraditya Singh](https://www.linkedin.com/in/jyotiraditya-singh-959488248/)
+Special thanks to the open-source community for making production-grade RAG systems accessible to everyone.
 
 ---
 
-## 📚 Additional Resources
+## 📧 Contact & Support
 
-### Learning RAG
-- [RAG Best Practices](https://www.pinecone.io/learn/retrieval-augmented-generation/)
-- [LangChain RAG Guide](https://python.langchain.com/docs/use_cases/question_answering/)
-- [Building Production RAG Systems](https://www.anyscale.com/blog/a-comprehensive-guide-for-building-rag-based-llm-applications-part-1)
-
-### Documentation
-- [ChromaDB Documentation](https://docs.trychroma.com/)
-- [Sentence Transformers](https://www.sbert.net/)
-- [Ollama Models](https://ollama.ai/library)
-- [LangChain Docs](https://python.langchain.com/)
-
-### Papers
-- [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401)
-- [Dense Passage Retrieval for Open-Domain Question Answering](https://arxiv.org/abs/2004.04906)
-
----
-## ✨ LAST LOGS
-    [2026-02-06 20:37:48,845] [INFO] RAG-QUERY - Starting RAG query service
-    [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Vector DB Path: ..\INTERMEDIATE_RAG\rag_project\vector_store\chroma
-    [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Collection: rag_max
-    [2026-02-06 20:37:48,850] [INFO] RAG-QUERY - Top-K: 3
-    [2026-02-06 20:38:05,604] [INFO] RAG-QUERY - Retriever initialization took 16.75s
-    [2026-02-06 20:38:05,606] [INFO] RAG-QUERY - LLM initialization took 0.00s
-    [2026-02-06 20:38:14,329] [INFO] RAG-QUERY - User question: What is RAG?
-    [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Retrieval took 0.30s
-    [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Retrieved 3 chunks
-    [2026-02-06 20:38:14,631] [INFO] RAG-QUERY - Reranking took 0.00s
-    [2026-02-06 20:38:45,765] [INFO] RAG-QUERY - LLM generation took 31.13s
-    [2026-02-06 20:38:45,767] [INFO] RAG-QUERY - Answer generated successfully
-    [2026-02-06 20:39:01,993] [INFO] RAG-QUERY - User exited query loop
-
-
-
-
-## ✨ Status Summary
-
-**System is stable and working up to vector retrieval.**
-
-- ✅ Ingestion pipeline: **Complete**
-- ✅ Vector storage: **Complete**
-- ✅ Query retrieval: **Complete**
-- 🚧 LLM integration: **In Progress**
-- 📋 Production features: **Planned**
-
-**Ready for LLM integration and production deployment.**
+- **Issues:** [GitHub Issues](https://github.com/your-username/intermediate-rag/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/your-username/intermediate-rag/discussions)
+- **Email:** your-email@example.com
 
 ---
 
 <div align="center">
 
-**Built with ❤️ by GRAVITY-AI for production-grade RAG systems**
+**Built with ❤️ by GRAVITY-AI**
 
-⭐ **Star this repo** if you find it helpful !
+⭐ **Star this repo if it helped you!** ⭐
+
+[Documentation](https://github.com/your-username/intermediate-rag/wiki) • [Report Bug](https://github.com/your-username/intermediate-rag/issues) • [Request Feature](https://github.com/your-username/intermediate-rag/issues)
 
 </div>
