@@ -10,7 +10,7 @@ import requests
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from rag_project.checker_files import SystemChecker
+from rag_project.db_checker_files import SystemChecker
 from rag_project.scripts.ingestion import run_ingestion
 
 # ------------------------------------------------------------
@@ -71,7 +71,11 @@ if st.button("Run Ingestion"):
     st.success(
         f"Ingestion complete. Chunks ingested: {result.get('chunks_ingested', 0)}"
     )
-    st.experimental_rerun()
+    if hasattr(st, "rerun"):
+        st.rerun()
+    else:
+        st.experimental_rerun()
+
 
 # ------------------------------------------------------------
 # Query

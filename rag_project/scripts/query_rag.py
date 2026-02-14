@@ -1,59 +1,64 @@
-import yaml
-from pathlib import Path
+# rag_project/scripts/query_rag.py
 
+from typing import Optional
 from utils.logger import setup_logger
 from utils.timer import timed_block
 
-from rag_project.rag.retriever_files.retriever import DocumentRetriever
-from rag_project.rag.retriever_files.reranker import Reranker
-from rag_project.rag.llm.ollama_llm import OllamaLLM
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 logger = setup_logger("RAG-QUERY", "query.log")
 
-with open(PROJECT_ROOT / "config.yaml") as f:
-    config = yaml.safe_load(f)
 
-retriever = DocumentRetriever(
-    chroma_dir=PROJECT_ROOT / config["paths"]["vector_store"]["chroma_dir"],
-    collection_name=config["chroma"]["collection_name"],
-    top_k=config["retrieval"]["top_k"],
-)
+class RAGService:
+    """
+    RAG Service holds initialized components.
+    Initialized ONCE at API startup.
+    """
 
-reranker = Reranker()
-llm = OllamaLLM(model_name=config["llm"]["model"])
+    def __init__(self, config, retriever, llm, reranker=None):
+        self.config = config
+        self.retriever = retriever
+        self.llm = llm
+        self.reranker = reranker
 
+    def run(self, question: str) -> dict:
+        logger.info(f"Received query: {question}")
 
-def run_rag_query(question: str) -> dict:
-    logger.info(f"Received query: {question}")
+        # Validate query length
+        min_length = self.config["api"].get("min_query_length", 5)
+        if len(question.strip()) < min_length:
+            return {
+                "status": "invalid_query",
+                "answer": "Query too short."
+            }
 
-    if len(question.strip()) < 5:
-        logger.warning("Query too short")
-        return {"status": "invalid_query", "answer": "Query too short."}
+        # ---------------- Retrieval ----------------
+        with timed_block("Retrieval", logger):
+            documents = self.retriever.retrieve(question)
 
-    with timed_block("Retrieval", logger):
-        docs = retriever.retrieve(question)
+        if not documents:
+            return {
+                "status": "no_context",
+                "answer": "No relevant data found."
+            }
 
-    if not docs:
-        logger.warning("No relevant context found")
+        # ---------------- Optional Reranking ----------------
+        if self.reranker:
+            with timed_block("Reranking", logger):
+                documents = self.reranker.rerank(question, documents)
+
+        # ---------------- Context Truncation ----------------
+        context = "\n\n".join(documents)
+
+        if self.config["llm"].get("context_truncate", False):
+            max_chars = self.config["llm"].get("max_context_chars", 4000)
+            context = context[:max_chars]
+
+        # ---------------- LLM Generation ----------------
+        with timed_block("LLM generation", logger):
+            answer = self.llm.generate(question, context)
+
         return {
-            "status": "no_context",
-            "answer": "No relevant data found in the knowledge base."
+            "status": "success",
+            "query": question,
+            "answer": answer,
+            "sources": documents if self.config["query"]["show_context"] else []
         }
-
-    with timed_block("Reranking", logger):
-        docs = reranker.rerank(question, docs)
-
-    context = "\n\n".join(docs)
-
-    with timed_block("LLM generation", logger):
-        answer = llm.generate(question, context)
-
-    logger.info("Query completed successfully")
-
-    return {
-        "status": "success",
-        "query": question,
-        "answer": answer,
-        "sources": []
-    }
