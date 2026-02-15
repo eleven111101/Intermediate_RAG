@@ -72,6 +72,7 @@ async def startup():
     if config["reranker"]["enabled"]:
         reranker = Reranker(model_name=config["reranker"]["model_name"])
 
+
     # Initialize LLM ONCE
     llm = OllamaLLM()
 

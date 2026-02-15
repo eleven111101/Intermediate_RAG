@@ -1,29 +1,22 @@
-from typing import List
-
+from sentence_transformers import CrossEncoder
 
 class Reranker:
-    """
-    Reranker interface.
-    By default, returns documents unchanged.
-    Can be extended with ML-based reranking later.
-    """
+    def __init__(self, model_name: str):
+        self.model = CrossEncoder(model_name)
 
-    def rerank(self, query: str, documents: List[str], top_n: int | None = None) -> List[str]:
-        """
-        Rerank retrieved documents based on relevance to query.
+    def rerank(self, query, documents, top_n=None):
+        pairs = [(query, doc) for doc in documents]
+        scores = self.model.predict(pairs)
 
-        Args:
-            query (str): User query
-            documents (List[str]): Retrieved documents
-            top_n (int | None): Optional cutoff after reranking
+        ranked = sorted(
+            zip(documents, scores),
+            key=lambda x: x[1],
+            reverse=True
+        )
 
-        Returns:
-            List[str]: Reranked documents
-        """
-        if not documents:
-            return []
+        reranked_docs = [doc for doc, _ in ranked]
 
         if top_n:
-            return documents[:top_n]
+            return reranked_docs[:top_n]
 
-        return documents
+        return reranked_docs
