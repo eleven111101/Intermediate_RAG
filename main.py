@@ -10,26 +10,51 @@ from rag_project.db_checker_files import SystemChecker
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 
+# ------------------------------------------------------------
+# Load Config
+# ------------------------------------------------------------
 def load_config():
     with open(PROJECT_ROOT / "config.yaml") as f:
         return yaml.safe_load(f)
 
 
-def wait_for_api(host, port, timeout=60):
-    url = f"http://127.0.0.1:{port}/docs"
+# ------------------------------------------------------------
+# Wait for API (Health Check Based)
+# ------------------------------------------------------------
+def wait_for_api(host, port, timeout=90):
+    url = f"http://127.0.0.1:{port}/health"
     start = time.time()
 
     while time.time() - start < timeout:
         try:
-            requests.get(url)
-            print("API is ready.")
-            return
+            r = requests.get(url, timeout=3)
+            if r.status_code == 200:
+                print("API is ready.")
+                return
         except Exception:
-            time.sleep(1)
+            pass
+
+        time.sleep(1)
 
     raise RuntimeError("API did not start in time.")
 
 
+# ------------------------------------------------------------
+# Graceful Shutdown
+# ------------------------------------------------------------
+def shutdown_process(proc, name):
+    if proc and proc.poll() is None:
+        print(f"Stopping {name}...")
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+
+
+# ------------------------------------------------------------
+# Main
+# ------------------------------------------------------------
 def main():
     config = load_config()
 
@@ -42,7 +67,7 @@ def main():
     print("\nStarting RAG System...\n")
 
     # -----------------------------------
-    # Select POC
+    # Select Active POC
     # -----------------------------------
     active_poc = config["app"]["active_poc"]
     poc_config = config["app"][active_poc]
@@ -68,9 +93,12 @@ def main():
             host,
             "--port",
             str(port),
-        ]
+        ],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
 
+    # Wait until API is healthy
     wait_for_api(host, port)
 
     # -----------------------------------
@@ -85,19 +113,23 @@ def main():
             "streamlit",
             "run",
             str(PROJECT_ROOT / streamlit_entry),
-        ]
+        ],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
 
     print("\nSystem running.")
     print("Press CTRL+C to shutdown.\n")
 
     try:
-        api_process.wait()
-        streamlit_process.wait()
+        while True:
+            time.sleep(1)
+
     except KeyboardInterrupt:
-        print("\nShutting down...")
-        api_process.terminate()
-        streamlit_process.terminate()
+        print("\nShutting down...\n")
+        shutdown_process(api_process, "FastAPI")
+        shutdown_process(streamlit_process, "Streamlit")
+        print("Shutdown complete.")
 
 
 if __name__ == "__main__":

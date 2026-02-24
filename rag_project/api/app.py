@@ -1,7 +1,6 @@
-# rag_project/api/app.py
-
 import asyncio
 import yaml
+import time
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -23,19 +22,26 @@ with open(PROJECT_ROOT / "config.yaml") as f:
     config = yaml.safe_load(f)
 
 api_config = config["api"]
-
 logger = setup_logger("API", "app.log")
 
 app = FastAPI(title="RAG API")
 
-# Global service container
 rag_service: RAGService = None
 
+# ------------------------------------------------------------
 # Concurrency
+# ------------------------------------------------------------
 MAX_CONCURRENT_REQUESTS = api_config.get("max_concurrent_requests", 3)
 ENABLE_SEMAPHORE = api_config.get("enable_semaphore", True)
-
 semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS) if ENABLE_SEMAPHORE else None
+
+# ------------------------------------------------------------
+# Simple In-Memory Cache
+# ------------------------------------------------------------
+CACHE_ENABLED = config.get("cache", {}).get("enabled", False)
+CACHE_TTL = config.get("cache", {}).get("ttl_seconds", 300)
+
+response_cache = {}  # {query: (timestamp, result)}
 
 
 class QueryRequest(BaseModel):
@@ -43,23 +49,19 @@ class QueryRequest(BaseModel):
 
 
 # ------------------------------------------------------------
-# Startup Initialization
+# Initialize Heavy Components (Background Thread)
 # ------------------------------------------------------------
-@app.on_event("startup")
-async def startup():
-
+def initialize_rag():
     global rag_service
 
     logger.info("Initializing RAG components...")
 
-    # Optional DB existence check
     require_db = config.get("database", {}).get("require_existing_db", False)
     checker = SystemChecker(PROJECT_ROOT)
 
     if require_db and not checker.db_exists():
         logger.warning("DB required but not found. Queries will fail until ingestion.")
 
-    # Initialize retriever
     retriever = DocumentRetriever(
         chroma_dir=PROJECT_ROOT / config["paths"]["vector_store"]["chroma_dir"],
         collection_name=config["chroma"]["collection_name"],
@@ -67,20 +69,33 @@ async def startup():
         fetch_k=config["retrieval"].get("fetch_k"),
     )
 
-    # Optional reranker
     reranker = None
     if config["reranker"]["enabled"]:
         reranker = Reranker(model_name=config["reranker"]["model_name"])
 
-
-    # Initialize LLM ONCE
     llm = OllamaLLM()
 
     rag_service = RAGService(config, retriever, llm, reranker)
 
     logger.info("RAG components initialized successfully.")
+
+
+# ------------------------------------------------------------
+# Startup
+# ------------------------------------------------------------
+@app.on_event("startup")
+async def startup():
+    await asyncio.to_thread(initialize_rag)
     logger.info(f"Max concurrent requests: {MAX_CONCURRENT_REQUESTS}")
     logger.info(f"Semaphore enabled: {ENABLE_SEMAPHORE}")
+
+
+# ------------------------------------------------------------
+# Health Check
+# ------------------------------------------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 
 # ------------------------------------------------------------
@@ -92,18 +107,32 @@ async def query_rag(req: QueryRequest):
     if not rag_service:
         raise HTTPException(status_code=500, detail="RAG service not initialized")
 
+    query = req.query.strip()
+
+    # ---------------- Cache Check ----------------
+    if CACHE_ENABLED and query in response_cache:
+        timestamp, result = response_cache[query]
+        if time.time() - timestamp < CACHE_TTL:
+            logger.info("Cache hit")
+            return result
+        else:
+            del response_cache[query]
+
     try:
         if ENABLE_SEMAPHORE:
             async with semaphore:
                 result = await asyncio.wait_for(
-                    asyncio.to_thread(rag_service.run, req.query),
+                    asyncio.to_thread(rag_service.run, query),
                     timeout=api_config.get("request_timeout", 300)
                 )
         else:
             result = await asyncio.wait_for(
-                asyncio.to_thread(rag_service.run, req.query),
+                asyncio.to_thread(rag_service.run, query),
                 timeout=api_config.get("request_timeout", 300)
             )
+
+        if CACHE_ENABLED:
+            response_cache[query] = (time.time(), result)
 
         return result
 

@@ -25,8 +25,10 @@ st.set_page_config(
     page_title="Ashwa Riders - Conquer Every Terrain",
     page_icon="🏁",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={}
 )
+st.sidebar.empty()
 
 # ------------------------------------------------------------
 # Custom CSS for Motorsport Theme
@@ -45,6 +47,24 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+
+    /* FORCE SIDEBAR VISIBILITY */
+    section[data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+        min-width: 320px !important;
+    }
+
+    /* Style the native collapse/expand arrow button */
+    button[data-testid="collapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        background: #dc143c !important;
+        color: white !important;
+        border-radius: 0 8px 8px 0 !important;
+        box-shadow: 4px 0 15px rgba(220,20,60,0.5) !important;
+    }
     
     /* Racing Stripe Background Effect */
     .stApp::before {
@@ -79,7 +99,6 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 8px;
         margin: 2rem 0 1rem 0;
-        text-shadow: 0 0 30px rgba(220, 20, 60, 0.3);
         animation: pulseGlow 3s ease-in-out infinite;
     }
     
@@ -322,23 +341,29 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------
+# Sidebar toggle button (top of main page)
+# ------------------------------------------------------------
+# toggle_col, _ = st.columns([3, 10])
+# with toggle_col:
+#     if st.button("☰ AI CHAT", key="sidebar_toggle"):
+#         # This button acts as a visual affordance; native sidebar arrow handles actual toggle
+#         st.rerun()
+
+# ------------------------------------------------------------
 # Sidebar - Chatbot Interface
 # ------------------------------------------------------------
 with st.sidebar:
     st.markdown("<h2 style='font-family: Orbitron; color: #dc143c; text-align: center; margin-bottom: 1.5rem;'>🏁 ASHWA AI ASSISTANT</h2>", unsafe_allow_html=True)
     
-    # Check DB status
     checker = SystemChecker(PROJECT_ROOT)
     db_status = checker.db_info()
     
     if db_status["exists"]:
         st.success("✅ Knowledge Base Online")
         
-        # Initialize chat history
         if "messages" not in st.session_state:
             st.session_state.messages = []
         
-        # Display chat history
         st.markdown("---")
         for message in st.session_state.messages:
             if message["role"] == "user":
@@ -346,16 +371,13 @@ with st.sidebar:
             else:
                 st.markdown(f"<div class='chat-message bot-message'>🤖 {message['content']}</div>", unsafe_allow_html=True)
         
-        # Chat input
         st.markdown("---")
         user_query = st.text_input("Ask about Ashwa Riders...", key="chat_input", placeholder="e.g., What services do you offer?")
         
         if st.button("Send", key="send_button", use_container_width=True):
             if user_query:
-                # Add user message to history
                 st.session_state.messages.append({"role": "user", "content": user_query})
                 
-                # Query the RAG system
                 with st.spinner("🔍 Searching knowledge base..."):
                     try:
                         response = requests.post(
@@ -364,13 +386,8 @@ with st.sidebar:
                             timeout=300
                         ).json()
                         
-                        status = response.get("status")
                         answer = response.get("answer", "I couldn't find an answer to that question.")
-                        
-                        # Add bot response to history
                         st.session_state.messages.append({"role": "assistant", "content": answer})
-                        
-                        # Rerun to update chat
                         st.rerun()
                         
                     except Exception as e:
@@ -514,7 +531,7 @@ with col_about2:
     </div>
     """, unsafe_allow_html=True)
 
-# Gear Section
+# Flagship ATV Section
 st.markdown("<h2 class='section-header'>⚙️ The Black Stallion - Our Flagship ATV</h2>", unsafe_allow_html=True)
 
 col_spec1, col_spec2 = st.columns(2)
@@ -548,6 +565,7 @@ with col_spec2:
     </div>
     """, unsafe_allow_html=True)
 
+# Amusement Markets Section
 st.markdown("<h2 class='section-header'>🎢 Expanding Into Amusement Markets</h2>", unsafe_allow_html=True)
 
 st.markdown("""
@@ -565,7 +583,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Additional Equipment Section
+# Support Equipment Section
 st.markdown("<h2 class='section-header'>🛠️ Support Equipment & Safety</h2>", unsafe_allow_html=True)
 
 gear_col1, gear_col2, gear_col3 = st.columns(3)
